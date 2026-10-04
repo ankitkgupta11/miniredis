@@ -10,58 +10,72 @@ public class MiniRedisClient {
 
 	public static void main(String[] args) {
 
-        try (
-        		Socket socket = new Socket("localhost", 6379); //Instantiates a new client socket and immediately tries to establish a network connection.
-        	BufferedReader serverReader = new BufferedReader(
-                    new InputStreamReader(socket.getInputStream()));
+		try (Socket socket = new Socket("localhost", 6379); // Instantiates a new client socket and immediately tries to
+															// establish a network connection.
+				BufferedReader serverReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
-            PrintWriter writer = new PrintWriter(
-                    socket.getOutputStream(), true);
+				PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
 
-            BufferedReader consoleReader = new BufferedReader(
-                    new InputStreamReader(System.in))
-    ) {
+				BufferedReader consoleReader = new BufferedReader(new InputStreamReader(System.in))) {
 
-        System.out.println("Connected to Mini Redis!");
-        System.out.println("Type commands:");
-        System.out.println("SET key value");
-        System.out.println("GET key");
-        System.out.println("PING");
-        System.out.println("Type 'exit' to quit");
-        System.out.println("EXISTS name");
-        System.out.println("DEL name");
+			System.out.println();
+			System.out.println("╔══════════════════════════════════════╗");
+			System.out.println("║          MINI REDIS CLI              ║");
+			System.out.println("╚══════════════════════════════════════╝");
+			System.out.println();
+			System.out.println("Connected to Mini Redis");
+			System.out.println("Type 'HELP' to see available commands");
+			System.out.println("Type 'EXIT' to disconnect");
+			System.out.println();
+			System.out.println();
 
-        System.out.println();
+			while (true) {
 
-        while (true) {
+				System.out.print("> ");
 
-            System.out.print("> ");
+				String command = consoleReader.readLine();
+				if ("HELP".equalsIgnoreCase(command.trim())) {
 
-            String command = consoleReader.readLine();
+					System.out.println();
+					System.out.println("Available commands:");
+					System.out.println("  PING");
+					System.out.println("  SET key value");
+					System.out.println("  GET key");
+					System.out.println("  DEL key");
+					System.out.println("  EXISTS key");
+					System.out.println("  EXPIRE key seconds");
+					System.out.println("  TTL key");
+					System.out.println("  INCR key");
+					System.out.println("  DECR key");
+					System.out.println("  HELP");
+					System.out.println("  EXIT");
+					System.out.println();
 
-            if (command == null || "exit".equalsIgnoreCase(command)) {
-                break;
-            }
+					continue;
+				}
+				if (command == null || "exit".equalsIgnoreCase(command)) {
+					break;
+				}
 
-            if (command.trim().isEmpty()) {
-                continue;
-            }
+				if (command.trim().isEmpty()) {
+					continue;
+				}
 
-            // Send command to Mini Redis server
-            writer.println(command);
+				// Send command to Mini Redis server
+				writer.println(command);
 
-            // Read response from server
-            String response = serverReader.readLine();
+				// Read response from server
+				String response = serverReader.readLine();
 
-            System.out.println(response);
-        }
+				System.out.println(response);
+			}
 
-        System.out.println("Disconnected from Mini Redis!");
+			System.out.println("Disconnected from Mini Redis!");
 
-    } catch (IOException e) {
+		} catch (IOException e) {
 
-        System.out.println("Could not connect to Mini Redis.");
-        e.printStackTrace();
-    }
-}
+			System.out.println("Could not connect to Mini Redis.");
+			e.printStackTrace();
+		}
+	}
 }
